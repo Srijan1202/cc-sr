@@ -1,11 +1,15 @@
-import ProductDetails from '@/components/ProductDetails'
-import SimilarProducts from '@/components/SimilarProducts'
+import ProductDetails from '@/components/ProductDetails';
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <ProductDetails id={params.id} />
-      <SimilarProducts id={params.id} />
-    </div>
-  )
+async function getProduct(id: string) {
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch product');
+  }
+  return res.json();
+}
+
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const { id } = await Promise.resolve(params);  // Await params here
+  const product = await getProduct(id);
+  return <ProductDetails product={product} />;
 }
